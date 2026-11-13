@@ -1,3 +1,9 @@
 # Local-only learning notes and Claude instructions
 .learning/
 CLAUDE.local.md
+
+data/
+.venv/
+.idea/
+__pycache__/
+*.egg-info/
