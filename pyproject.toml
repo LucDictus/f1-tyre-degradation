@@ -5,16 +5,26 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "f1-tyre-degradation"
 version = "0.1.0"
-description = "How fast does each F1 tyre compound degrade? A reproducible FastF1 pipeline with fuel-corrected lap times for Bahrain, Monza and one more race."
+description = "Formula 1 tyre degradation analysis using Openf1 data."
 authors = [{ name = "LucDictus", email = "lucdictus161@gmail.com" }]
 requires-python = ">=3.12"
-dependencies = ["fastf1", "pandas", "pyarrow", "statsmodels", "matplotlib"]
+dependencies = [
+    "pandas",
+    "pyarrow",
+    "statsmodels",
+    "matplotlib",
+    "requests",
+]
 
 [project.scripts]
 tyredeg = "tyredeg.cli:main"
 
 [project.optional-dependencies]
-dev = ["pytest", "ruff"]
+dev = [
+    "pytest",
+    "ruff",
+    "responses",
+]
 
 [tool.ruff]
 line-length = 100
