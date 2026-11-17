@@ -10,6 +10,7 @@ from tyredeg.clean import (
     drop_out_laps,
     drop_safety_car_laps,
     drop_slow_laps,
+    save_clean,
 )
 
 
@@ -138,3 +139,21 @@ def test_drop_safety_car_laps_multiple_safety_cars():
 
     with pytest.raises(ValueError, match="exactly 1"):
         drop_safety_car_laps(laps, race_control)
+
+
+def test_save_clean(tmp_path):
+    laps = pd.DataFrame(
+        {
+            "driver_number": [1, 2],
+            "lap_number": [10, 11],
+            "lap_duration": [90.5, 91.2],
+        }
+    )
+
+    path = tmp_path / "laps.parquet"
+
+    save_clean(laps, path)
+
+    loaded = pd.read_parquet(path)
+
+    pd.testing.assert_frame_equal(loaded, laps)
