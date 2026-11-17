@@ -1,6 +1,7 @@
 import json
 import tempfile
 import time
+from collections.abc import Callable
 from pathlib import Path
 
 import requests
@@ -66,28 +67,36 @@ def fetch_endpoint(
     return data
 
 
-def save_raw(records: list[dict], path: Path) -> None:
-    """Save raw records atomically as JSON."""
+def atomic_write(path: Path, write: Callable[[Path], None]) -> None:
+    """Write to a temporary file, then replace the destination atomically."""
     path.parent.mkdir(parents=True, exist_ok=True)
 
     tmp_path = None
 
     try:
         with tempfile.NamedTemporaryFile(
-            suffix=".json",
+            suffix=path.suffix,
             dir=path.parent,
             delete=False,
         ) as tmp_file:
             tmp_path = Path(tmp_file.name)
 
-        with tmp_path.open("w", encoding="utf-8") as file:
-            json.dump(records, file, indent=2, ensure_ascii=False)
-
+        write(tmp_path)
         tmp_path.replace(path)
 
     finally:
         if tmp_path is not None and tmp_path.exists():
             tmp_path.unlink()
+
+
+def save_raw(records: list[dict], path: Path) -> None:
+    """Save raw records atomically as JSON."""
+
+    def write_json(tmp_path: Path) -> None:
+        with tmp_path.open("w", encoding="utf-8") as file:
+            json.dump(records, file, indent=2, ensure_ascii=False)
+
+    atomic_write(path, write_json)
 
 
 def print_race_summary(

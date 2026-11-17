@@ -1,6 +1,6 @@
 import argparse
 
-from tyredeg import ingest
+from tyredeg import clean, ingest
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -19,7 +19,7 @@ def main(argv: list[str] | None = None) -> None:
     if args.command == "ingest":
         ingest.run()
     elif args.command == "analyze":
-        print("Analyzing F1 tyre degradation...")
+        clean.run()
 
 
 if __name__ == "__main__":
