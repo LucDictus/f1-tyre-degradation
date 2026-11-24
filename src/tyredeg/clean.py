@@ -3,6 +3,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from tyredeg.checks import run_checks
 from tyredeg.config import SESSIONS
 from tyredeg.ingest import PROJECT_ROOT, atomic_write, raw_path
 
@@ -130,6 +131,9 @@ def run() -> pd.DataFrame:
 
     # Combine only after every race has been cleaned.
     combined = pd.concat(cleaned_races, ignore_index=True)
+
+    # Validate all cleaned data before saving.
+    run_checks(combined)
 
     # Save atomically.
     path = clean_path()
